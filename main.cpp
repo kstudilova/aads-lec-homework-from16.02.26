@@ -11,7 +11,7 @@ struct BiList
 template< class T >
 BiList< T >* add(BiList< T >* h, const T& d)
 {
-  BiList< T >* newNode = new BiList< T >{d, h, h->prev};
+  BiList< T >* newNode = new BiList< T >{d, h, h->prev}; //T(const T&)
   h->prev->next = newNode;
   h->prev = newNode;
   return newNode;
@@ -20,7 +20,7 @@ BiList< T >* add(BiList< T >* h, const T& d)
 template< class T >
 BiList< T >* insert(BiList< T >* h, const T& d)
 {
-  BiList< T >* newNode = new BiList< T >{d, h->next, h};
+  BiList< T >* newNode = new BiList< T >{d, h->next, h}; //T(const T&)
   h->next->prev = newNode;
   h->next = newNode;
   return newNode;
@@ -31,13 +31,13 @@ BiList< T >* cut(BiList< T >* h) noexcept
 {
   if (h->next == h) 
   {
-    delete h;
+    delete h; //~T()
     return nullptr;
   }
   BiList< T >* newHead = h->next;
   h->prev->next = h->next;
   h->next->prev = h->prev;
-  delete h;
+  delete h; //~T()
   return newHead;
 };
 
@@ -60,7 +60,7 @@ BiList< T >* clear(BiList< T >* h, BiList< T >* e) noexcept
 {
   if (h == e)
   {
-    delete h;
+    delete h; //~T()
     return nullptr;
   }
   BiList< T >* current = h;
@@ -71,7 +71,7 @@ BiList< T >* clear(BiList< T >* h, BiList< T >* e) noexcept
     delete current;
     current = next;
   }
-  delete e;
+  delete e; //~T()
   return nullptr;
 };
 
@@ -99,8 +99,22 @@ F traverse(F f, BiList< T >* h, BiList< T >* e) noexcept
 };
 
 template< class T >
+size_t sizeCount(BiList< T >* h) {
+  if (h == nullptr){
+    return 0;
+  }
+  size_t count = 1;
+  BiList< T >* current = h->next;
+  while (current != h) {
+    ++count;
+    current = current->next;
+  }
+  return count;
+};
+
+template< class T >
 BiList< T >* makeBiList(const T& d) {
-    BiList< T >* newNode = new BiList< T >{d, nullptr, nullptr};
+    BiList< T >* newNode = new BiList< T >{d, nullptr, nullptr}; //T(const T&)
     newNode->next = newNode;
     newNode->prev = newNode;
     return newNode;
