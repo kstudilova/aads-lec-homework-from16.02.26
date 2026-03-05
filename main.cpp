@@ -67,7 +67,7 @@ BiList< T >* clear(BiList< T >* h, BiList< T >* e) noexcept
   BiList< T >* next = nullptr;
   while (current != e)
   {
-    next = nurrent->next;
+    next = current->next;
     delete current;
     current = next;
   }
@@ -98,7 +98,58 @@ F traverse(F f, BiList< T >* h, BiList< T >* e) noexcept
   return f;
 };
 
+template< class T >
+BiList< T >* makeBiList(const T& d) {
+    BiList< T >* newNode = new BiList< T >{d, nullptr, nullptr};
+    newNode->next = newNode;
+    newNode->prev = newNode;
+    return newNode;
+};
+
+template< class T >
+void print(BiList< T >* h) {
+    if (h == nullptr) {
+        std::cout << "\n";
+        return;
+    }
+    std::cout << h->val << " ";
+    
+    BiList< T >* current = h->next;
+    while (current != h)
+    {
+      std::cout << current->val << " ";
+      current = current->next;
+    }
+    std::cout << "\n";
+}
+
 int main()
 {
-
+  size_t size = 7;
+  int* array = new int[size]{3, 5, 8, 12, 30, 18, 7};
+  BiList<int>* h = nullptr;
+  try {
+    h = makeBiList(array[0]);
+  } catch(...) {
+    delete[] array;
+    return 1;
+  }
+  try{
+    for (size_t i = 1; i < size; ++i) {
+      h = insert(h->prev,  array[i]);
+  }
+  } catch(...) {
+    if (h != nullptr)
+    {
+      clear(h, h->prev);
+    }
+    delete[] array;
+    return 1;
+  }
+  print(h);
+  if (h != nullptr) {
+    clear(h, h->prev);
+  }
+  delete[] array;
+  return 0;
 }
